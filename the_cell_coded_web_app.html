@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Cell Coded | The Intersection of Biology & Computer Science</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cell: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              200: '#99f6e4',
+              300: '#5eead4',
+              400: '#2dd4bf',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+              900: '#0d282e',
+              950: '#051317',
+            },
+            accent: '#06b6d4',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    
+    /* Clean Minimal Background Pattern */
+    .dot-pattern {
+      background-image: radial-gradient(rgba(20, 184, 166, 0.12) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* Subtle Glassmorphism */
+    .glass-panel {
+      background: rgba(13, 40, 46, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(45, 212, 191, 0.15);
+    }
+    .light .glass-panel {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    /* Custom Minimal Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(20, 184, 166, 0.3);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(20, 184, 166, 0.6);
+    }
+  </style>
+</head>
+
+<body class="bg-[#051317] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-cell-500 selection:text-slate-950 dark:bg-[#051317] dark:text-slate-100">
+
+  <!-- ========================================== -->
+  <!-- 1. HEADER / NAVIGATION                     -->
+  <!-- ========================================== -->
+  <header class="sticky top-0 z-40 w-full backdrop-blur-md bg-[#051317]/80 border-b border-cell-900/60">
+    <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#home" onclick="showSection('home')" class="flex items-center gap-3 group">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cell-500 to-accent flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-cell-500/20 group-hover:scale-105 transition-transform">
+          <i class="fa-solid fa-dna text-sm"></i>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-bold text-lg tracking-tight text-white font-sans group-hover:text-cell-400 transition-colors">
+            THE CELL CODED
+          </span>
+          <span class="text-[9px] font-mono text-cell-400 uppercase tracking-widest -mt-1">Bio x CS</span>
+        </div>
+      </a>
+
+      <!-- Navigation Menu -->
+      <nav class="hidden md:flex items-center gap-8 text-xs font-medium tracking-wide">
+        <a href="#home" onclick="showSection('home')" class="text-slate-300 hover:text-cell-400 transition-colors">HOME</a>
+        
+        <!-- Articles Link & Dropdown -->
+        <div class="relative group">
+          <button onclick="showSection('articles')" class="flex items-center gap-1.5 text-slate-300 hover:text-cell-400 py-2 transition-colors uppercase">
+            Articles
+            <i class="fa-solid fa-chevron-down text-[10px] opacity-60 group-hover:rotate-180 transition-transform"></i>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div class="absolute left-0 top-full pt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <div class="glass-panel rounded-xl p-2 shadow-2xl space-y-1">
+              <a href="#articles" onclick="filterCategory('all')" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-slate-300 hover:bg-cell-500/10 hover:text-cell-300 transition-colors">
+                <i class="fa-solid fa-layer-group text-cell-400 text-xs"></i>
+                All Articles
+              </a>
+              <a href="#articles" onclick="filterCategory('Genomics')" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-slate-300 hover:bg-cell-500/10 hover:text-cell-300 transition-colors">
+                <i class="fa-solid fa-code text-cyan-400 text-xs"></i>
+                Genomics & Data
+              </a>
+              <a href="#articles" onclick="filterCategory('Python Bio')" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-slate-300 hover:bg-cell-500/10 hover:text-cell-300 transition-colors">
+                <i class="fa-brands fa-python text-amber-400 text-xs"></i>
+                Python Projects
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <a href="#articles" onclick="showSection('articles')" class="text-slate-300 hover:text-cell-400 transition-colors">PROJECTS</a>
+      </nav>
+
+      <!-- Action Button -->
+      <div class="flex items-center gap-4">
+        <button onclick="openPublishModal()" class="px-4 py-2 rounded-xl bg-cell-500/10 border border-cell-500/30 hover:border-cell-400 hover:bg-cell-500/20 text-cell-300 text-xs font-mono font-medium transition-all flex items-center gap-2 shadow-sm">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+          <span>Add Article</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- 2. MAIN CONTENT                            -->
+  <!-- ========================================== -->
+  <main class="flex-grow dot-pattern">
+
+    <!-- HOME SECTION / HERO SLIDE -->
+    <section id="sec-home" class="max-w-6xl mx-auto px-6 py-12 space-y-16">
+      
+      <!-- High-Tech Cover Slide -->
+      <div class="relative overflow-hidden rounded-3xl border border-cell-900/80 bg-gradient-to-b from-[#0a1e24] to-[#051317] p-8 sm:p-16 text-center shadow-2xl flex flex-col items-center justify-center min-h-[420px]">
+        
+        <!-- Interactive Bio-CS Merging Visual (Canvas) -->
+        <canvas id="bioCanvas" class="absolute inset-0 w-full h-full opacity-40 pointer-events-none"></canvas>
+
+        <div class="relative z-10 max-w-2xl mx-auto space-y-4">
+          <!-- Subtle Minimal Tag -->
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cell-500/10 border border-cell-500/20 text-cell-300 text-[11px] font-mono tracking-widest uppercase">
+            <span class="w-1.5 h-1.5 rounded-full bg-cell-400 animate-pulse"></span>
+            BIOLOGY x COMPUTER SCIENCE
+          </div>
+
+          <!-- Main Title -->
+          <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white">
+            THE CELL CODED
+          </h1>
+
+          <!-- Exact Minimalist Tagline -->
+          <p class="text-slate-300 text-base sm:text-lg font-light tracking-wide pt-1">
+            The intersection of biology and computer science
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Articles & Projects Showcase Section (Clean State) -->
+      <div id="articles" class="space-y-6 pt-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-cell-900/60 pb-4">
+          <div>
+            <h2 class="text-xl font-bold tracking-tight text-white">Articles & Code Showcase</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Explore published write-ups and Python computational biology scripts.</p>
+          </div>
+
+          <!-- Category Filters -->
+          <div class="flex items-center gap-2">
+            <button onclick="filterCategory('all')" id="cat-all" class="cat-pill px-3 py-1 rounded-lg text-xs font-mono bg-cell-500 text-slate-950 font-semibold transition-all">All</button>
+            <button onclick="filterCategory('Genomics')" id="cat-Genomics" class="cat-pill px-3 py-1 rounded-lg text-xs font-mono bg-cell-900/60 text-slate-400 hover:text-white transition-all">Genomics</button>
+            <button onclick="filterCategory('Python Bio')" id="cat-Python Bio" class="cat-pill px-3 py-1 rounded-lg text-xs font-mono bg-cell-900/60 text-slate-400 hover:text-white transition-all">Python Bio</button>
+          </div>
+        </div>
+
+        <!-- Dynamic Articles Container (Starts Empty & Neat) -->
+        <div id="articles-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Dynamically populated from LocalStorage or shows Empty Placeholder -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- FULL ARTICLE DETAIL SECTION -->
+    <section id="sec-article-detail" class="hidden max-w-4xl mx-auto px-6 py-12">
+      <button onclick="showSection('home')" class="mb-6 inline-flex items-center gap-2 text-xs font-mono text-cell-400 hover:text-cell-300 transition-colors">
+        <i class="fa-solid fa-arrow-left"></i> Back to Home
+      </button>
+
+      <article id="detail-container" class="glass-panel rounded-3xl p-8 sm:p-12 space-y-6 border border-cell-800/40">
+        <!-- Populated via JS -->
+      </article>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- 3. IN-APP ARTICLE CREATOR MODAL            -->
+  <!-- ========================================== -->
+  <div id="publish-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-[#0a1e24] border border-cell-800/60 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative space-y-5">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between border-b border-cell-900/80 pb-4">
+        <div>
+          <h3 class="font-bold text-lg text-white">New Article or Project</h3>
+          <p class="text-xs text-slate-400">Post directly to The Cell Coded website.</p>
+        </div>
+        <button onclick="closePublishModal()" class="w-8 h-8 rounded-full bg-cell-900/50 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Form -->
+      <form id="publish-form" onsubmit="handlePublish(event)" class="space-y-4 text-xs">
+        
+        <!-- Title -->
+        <div>
+          <label class="block font-mono text-slate-300 mb-1">Title *</label>
+          <input type="text" id="pub-title" required placeholder="e.g., Sequencing Alignment with Python" class="w-full px-3.5 py-2.5 rounded-xl bg-[#051317] border border-cell-900 text-slate-100 focus:outline-none focus:border-cell-500">
+        </div>
+
+        <!-- Category -->
+        <div>
+          <label class="block font-mono text-slate-300 mb-1">Category *</label>
+          <select id="pub-category" class="w-full px-3.5 py-2.5 rounded-xl bg-[#051317] border border-cell-900 text-slate-100 focus:outline-none focus:border-cell-500">
+            <option value="Genomics">Genomics</option>
+            <option value="Python Bio">Python Bio Project</option>
+            <option value="General Bio-CS">General Bio-CS</option>
+          </select>
+        </div>
+
+        <!-- Short Summary -->
+        <div>
+          <label class="block font-mono text-slate-300 mb-1">Short Blurb / Summary *</label>
+          <textarea id="pub-summary" rows="2" required placeholder="A brief one or two sentence summary..." class="w-full px-3.5 py-2.5 rounded-xl bg-[#051317] border border-cell-900 text-slate-100 focus:outline-none focus:border-cell-500"></textarea>
+        </div>
+
+        <!-- Optional Python Code -->
+        <div>
+          <label class="block font-mono text-slate-300 mb-1">Python Code Snippet (Optional)</label>
+          <textarea id="pub-code" rows="3" placeholder="# Add Python script code here..." class="w-full px-3.5 py-2.5 rounded-xl bg-[#030b0e] border border-cell-900 text-emerald-400 font-mono focus:outline-none focus:border-cell-500"></textarea>
+        </div>
+
+        <!-- Main Body -->
+        <div>
+          <label class="block font-mono text-slate-300 mb-1">Article Content *</label>
+          <textarea id="pub-content" rows="4" required placeholder="Write full article here..." class="w-full px-3.5 py-2.5 rounded-xl bg-[#051317] border border-cell-900 text-slate-100 focus:outline-none focus:border-cell-500"></textarea>
+        </div>
+
+        <div class="pt-3 flex items-center justify-end gap-3 border-t border-cell-900/80">
+          <button type="button" onclick="closePublishModal()" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white transition-colors">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-cell-500 hover:bg-cell-400 text-slate-950 font-bold font-mono transition-all">Publish</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-cell-900 border border-cell-500/50 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-xs">
+    <i class="fa-solid fa-circle-check text-cell-400 text-sm"></i>
+    <span id="toast-msg">Notification</span>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 4. FOOTER                                  -->
+  <!-- ========================================== -->
+  <footer class="border-t border-cell-900/60 py-8 text-center text-xs text-slate-500 font-mono">
+    <p>THE CELL CODED © 2026. All rights reserved.</p>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- 5. JAVASCRIPT LOGIC                        -->
+  <!-- ========================================== -->
+  <script>
+    // LocalStorage State Management
+    let articles = JSON.parse(localStorage.getItem('thecellcoded_articles')) || [];
+    let currentCategory = 'all';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderArticles();
+      initHeroCanvas();
+    });
+
+    // Navigation Switcher
+    function showSection(sec) {
+      document.getElementById('sec-home').classList.add('hidden');
+      document.getElementById('sec-article-detail').classList.add('hidden');
+
+      if (sec === 'home' || sec === 'articles') {
+        document.getElementById('sec-home').classList.remove('hidden');
+        if (sec === 'articles') {
+          document.getElementById('articles').scrollIntoView({ behavior: 'smooth' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+    }
+
+    // Render Articles (Neat Clean State if empty)
+    function renderArticles() {
+      const list = document.getElementById('articles-list');
+      list.innerHTML = '';
+
+      const filtered = currentCategory === 'all' 
+        ? articles 
+        : articles.filter(a => a.category === currentCategory);
+
+      if (filtered.length === 0) {
+        list.innerHTML = `
+          <div class="col-span-full rounded-3xl border border-dashed border-cell-900/80 p-12 text-center space-y-4">
+            <div class="w-12 h-12 rounded-2xl bg-cell-500/10 text-cell-400 flex items-center justify-center mx-auto text-lg">
+              <i class="fa-solid fa-pen-nib"></i>
+            </div>
+            <div class="space-y-1">
+              <h3 class="text-sm font-semibold text-slate-300">No articles published yet</h3>
+              <p class="text-xs text-slate-500 max-w-sm mx-auto">This space is ready for your future posts and Python computational biology write-ups.</p>
+            </div>
+            <button onclick="openPublishModal()" class="px-4 py-2 rounded-xl bg-cell-500/10 border border-cell-500/30 text-cell-300 text-xs font-mono hover:bg-cell-500/20 transition-all">
+              + Add First Article
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(art => {
+        const card = document.createElement('div');
+        card.className = 'glass-panel rounded-2xl p-6 space-y-4 hover:border-cell-500/40 transition-all group flex flex-col justify-between';
+        card.innerHTML = `
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <span class="px-2 py-0.5 rounded bg-cell-500/10 text-cell-400 font-semibold">${art.category}</span>
+              <span>${art.date}</span>
+            </div>
+            <h3 class="font-bold text-base text-white group-hover:text-cell-400 transition-colors">${art.title}</h3>
+            <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed">${art.summary}</p>
+          </div>
+
+          <div class="pt-4 border-t border-cell-900/60 flex items-center justify-between">
+            <button onclick="viewArticle('${art.id}')" class="text-xs font-mono text-cell-400 hover:text-cell-300 flex items-center gap-1.5">
+              Read Article <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </button>
+            <button onclick="deleteArticle('${art.id}')" class="text-slate-600 hover:text-rose-400 transition-colors text-xs">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    // Category Filter
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        btn.className = 'cat-pill px-3 py-1 rounded-lg text-xs font-mono bg-cell-900/60 text-slate-400 hover:text-white transition-all';
+      });
+      const activeBtn = document.getElementById(`cat-${cat}`);
+      if (activeBtn) {
+        activeBtn.className = 'cat-pill px-3 py-1 rounded-lg text-xs font-mono bg-cell-500 text-slate-950 font-semibold transition-all';
+      }
+      renderArticles();
+    }
+
+    // View Detailed Article
+    function viewArticle(id) {
+      const art = articles.find(a => a.id === id);
+      if (!art) return;
+
+      const container = document.getElementById('detail-container');
+      container.innerHTML = `
+        <div class="space-y-2 border-b border-cell-900/80 pb-6">
+          <div class="flex items-center gap-3 text-xs font-mono text-cell-400">
+            <span class="px-2.5 py-0.5 rounded bg-cell-500/10 font-semibold">${art.category}</span>
+            <span>${art.date}</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">${art.title}</h1>
+        </div>
+
+        <p class="text-sm italic text-slate-300 border-l-2 border-cell-500 pl-4 py-1">${art.summary}</p>
+
+        ${art.code ? `
+          <div class="space-y-1">
+            <span class="text-[11px] font-mono text-slate-400"><i class="fa-brands fa-python text-amber-400 mr-1"></i> Python Code Snippet:</span>
+            <pre class="bg-[#030b0e] text-emerald-400 p-4 rounded-xl text-xs font-mono overflow-x-auto border border-cell-900"><code>${escapeHTML(art.code)}</code></pre>
+          </div>
+        ` : ''}
+
+        <div class="text-sm text-slate-300 leading-relaxed whitespace-pre-line pt-2">
+          ${art.content}
+        </div>
+      `;
+
+      document.getElementById('sec-home').classList.add('hidden');
+      document.getElementById('sec-article-detail').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Modal Controls
+    function openPublishModal() {
+      document.getElementById('publish-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePublishModal() {
+      document.getElementById('publish-modal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Submit New Article
+    function handlePublish(e) {
+      e.preventDefault();
+      
+      const title = document.getElementById('pub-title').value;
+      const category = document.getElementById('pub-category').value;
+      const summary = document.getElementById('pub-summary').value;
+      const code = document.getElementById('pub-code').value;
+      const content = document.getElementById('pub-content').value;
+
+      const newArt = {
+        id: 'art-' + Date.now(),
+        title,
+        category,
+        summary,
+        code,
+        content,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      };
+
+      articles.unshift(newArt);
+      localStorage.setItem('thecellcoded_articles', JSON.stringify(articles));
+      
+      renderArticles();
+      closePublishModal();
+      document.getElementById('publish-form').reset();
+      showToast('Article published to site!');
+      showSection('articles');
+    }
+
+    // Delete Article
+    function deleteArticle(id) {
+      articles = articles.filter(a => a.id !== id);
+      localStorage.setItem('thecellcoded_articles', JSON.stringify(articles));
+      renderArticles();
+      showToast('Article deleted');
+    }
+
+    // Toast Notice
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3000);
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Canvas Background Animation: DNA & Data Nodes Merging
+    function initHeroCanvas() {
+      const canvas = document.getElementById('bioCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      let t = 0;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        const width = canvas.width;
+        const height = canvas.height;
+        const cy = height / 2;
+
+        ctx.lineWidth = 1.5;
+
+        // Draw animated merging strands (DNA + Binary Data)
+        for (let x = 0; x < width; x += 25) {
+          const y1 = cy + Math.sin(x * 0.01 + t) * 45;
+          const y2 = cy + Math.sin(x * 0.01 + t + Math.PI) * 45;
+
+          // Strand 1 (Teal DNA)
+          ctx.fillStyle = '#14b8a6';
+          ctx.beginPath();
+          ctx.arc(x, y1, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Strand 2 (Cyan Code Node)
+          ctx.fillStyle = '#06b6d4';
+          ctx.beginPath();
+          ctx.arc(x, y2, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Connecting Bonds / Code Lines
+          if (x % 50 === 0) {
+            ctx.strokeStyle = 'rgba(20, 184, 166, 0.15)';
+            ctx.beginPath();
+            ctx.moveTo(x, y1);
+            ctx.lineTo(x, y2);
+            ctx.stroke();
+          }
+        }
+
+        t += 0.02;
+        requestAnimationFrame(animate);
+      }
+      animate();
+    }
+  </script>
+</body>
+</html>
